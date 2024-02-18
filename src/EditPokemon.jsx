@@ -1,6 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 
-const EditPokemon = ({ editPokemon }) => {
+const EditPokemon = ({ pokemonForEdit, editPokemon }) => {
+	const [newPokemonName, setNewPokemonName] = useState("");
+
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		console.log("ime u handelSubmtu", newPokemonName);
+		editPokemon(pokemonForEdit, newPokemonName);
+		setNewPokemonName("");
+	};
+
 	return (
 		<>
 			<div
@@ -19,7 +28,7 @@ const EditPokemon = ({ editPokemon }) => {
 								className="modal-title fs-5"
 								id="staticBackdropLabel"
 							>
-								Modal title
+								Edit {`${pokemonForEdit.name}`}
 							</h1>
 							<button
 								type="button"
@@ -28,23 +37,43 @@ const EditPokemon = ({ editPokemon }) => {
 								aria-label="Close"
 							></button>
 						</div>
-						<div className="modal-body">...</div>
-						<div className="modal-footer">
-							<button
-								type="button"
-								className="btn btn-secondary"
-								data-bs-dismiss="modal"
-							>
-								Close
-							</button>
-							<button
-								type="button"
-								className="btn btn-primary"
-								data-bs-dismiss="modal"
-							>
-								Understood
-							</button>
-						</div>
+						<form onSubmit={handleSubmit}>
+							<div className="modal-body">
+								<div className="mb-3">
+									<label
+										htmlFor="pokemonEdit"
+										className="col-form-label"
+									>
+										Enter new pokemon name
+									</label>
+									<input
+										type="text"
+										className="form-control"
+										id="pokemonEdit"
+										value={newPokemonName}
+										onChange={(e) =>
+											setNewPokemonName(e.target.value)
+										}
+									></input>
+								</div>
+							</div>
+							<div className="modal-footer">
+								<button
+									type="button"
+									className="btn btn-secondary"
+									data-bs-dismiss="modal"
+								>
+									Close
+								</button>
+								<button
+									type="submit"
+									className="btn btn-primary"
+									data-bs-dismiss="modal"
+								>
+									Change
+								</button>
+							</div>
+						</form>
 					</div>
 				</div>
 			</div>

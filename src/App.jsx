@@ -3,14 +3,18 @@ import Loader from "./Loader";
 import Pokemons from "./Pokemons";
 import { getResource } from "./helpers/fetch";
 import { YELLOW_POKEMONS } from "./helpers/endpoints";
-import { addToStorage, deleteFromStorage, idGenerator } from "./helpers/util";
+import {
+	readFromStorage,
+	addToStorage,
+	deleteFromStorage,
+	idGenerator,
+	changeInStorage,
+} from "./helpers/util";
 import { POKEMONS_STORAGE_KEY } from "./helpers/constants";
-import EditPokemon from "./EditPokemon";
 
 const App = () => {
 	const [pokemons, setPokemons] = useState([]);
 	const [isLoaded, setIsLoaded] = useState(false); //koristi za inicijalno prikazivanje loadera
-	const [pokemonForEdit, setPokemonForEdit] = useState(false);
 
 	const storagePokemons =
 		JSON.parse(localStorage.getItem(POKEMONS_STORAGE_KEY)) ?? []; //ovo se dogodi samo prilikom inicijalizacije
@@ -57,18 +61,31 @@ const App = () => {
 		}
 	};
 
-	const editPokemon = (pokemon) => {
+	const editPokemon = (pokemon, newPokemonName) => {
 		try {
-			addToStorage(POKEMONS_STORAGE_KEY, pokemon);
-			setPokemons([pokemon, ...pokemons]);
-		} catch (error) {
-			alert("Greška prilikom pisanja podataka u locak storage");
-		}
-	};
+			const storageData = readFromStorage(POKEMONS_STORAGE_KEY);
 
-	const openPokemon = (pokemon) => {
-		setPokemonForEdit(true);
-		return pokemon;
+			const pokemonInDataStorage = storageData.find(
+				(element) => element.id === pokemon.id
+			);
+
+			if (pokemonInDataStorage) {
+				const updatedPokemon = {
+					...pokemon,
+					name: newPokemonName,
+				};
+
+				changeInStorage(POKEMONS_STORAGE_KEY, updatedPokemon);
+				const updatedData = readFromStorage(POKEMONS_STORAGE_KEY);
+				setPokemons(updatedData);
+			} else {
+				throw new Error(
+					"Pokemon je s APIja i ne može ga se promijeniti"
+				);
+			}
+		} catch (error) {
+			alert(error);
+		}
 	};
 
 	return (
@@ -79,10 +96,9 @@ const App = () => {
 					pokemons={pokemons}
 					deletePokemon={deletePokemon}
 					addPokemon={addPokemon}
-					openPokemon={openPokemon}
+					editPokemon={editPokemon}
 				/>
 			)}
-			{pokemonForEdit && <EditPokemon pokemonForEdit={pokemons} />}
 		</div>
 	);
 };

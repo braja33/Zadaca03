@@ -1,19 +1,28 @@
 import React, { useState } from "react";
 import NewPokemon from "./NewPokemon";
+import EditPokemon from "./EditPokemon";
 
-const Pokemons = ({ pokemons, deletePokemon, addPokemon, openPokemon }) => {
+const Pokemons = ({ pokemons, deletePokemon, addPokemon, editPokemon }) => {
 	const [isNewPokemonShowed, setIsNewPokemon] = useState(false);
+	const [isPokemonForEdit, setIsPokemonForEdit] = useState(false);
+	const [pokemonForEdit, setPokemonForEdit] = useState(null);
 
 	const handleDeletePokemon = (e, pokemon) => {
 		e.preventDefault();
-		console.log(pokemon.name);
+
 		deletePokemon(pokemon);
 	};
 
 	const handleOpenPokemon = (e, pokemon) => {
 		e.preventDefault();
-		console.log(pokemon.name);
+
 		openPokemon(pokemon);
+	};
+
+	const openPokemon = (pokemon) => {
+		setIsPokemonForEdit(true);
+		setPokemonForEdit(pokemon);
+		console.log("pokemon za uređivanje", pokemon);
 	};
 
 	return (
@@ -27,6 +36,12 @@ const Pokemons = ({ pokemons, deletePokemon, addPokemon, openPokemon }) => {
 			</button>
 
 			{isNewPokemonShowed && <NewPokemon addPokemon={addPokemon} />}
+			{isPokemonForEdit && (
+				<EditPokemon
+					pokemonForEdit={pokemonForEdit}
+					editPokemon={editPokemon}
+				/>
+			)}
 
 			<hr />
 			<ul className="list-group">

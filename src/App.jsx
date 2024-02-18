@@ -82,8 +82,9 @@ const App = () => {
 					const updatedPokemons = [...pokemons];
 					updatedPokemons[index] = updatedPokemon;
 					setPokemons(updatedPokemons);
+				} else {
+					throw new Error("Pokemon nije u polju");
 				}
-				throw new Error("Pokemon nije u polju");
 			} else {
 				throw new Error(
 					"Pokemon je s APIja i ne može ga se promijeniti"

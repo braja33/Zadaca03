@@ -5,15 +5,15 @@ import { getResource } from "./helpers/fetch";
 import { YELLOW_POKEMONS } from "./helpers/endpoints";
 import { addToStorage, deleteFromStorage, idGenerator } from "./helpers/util";
 import { POKEMONS_STORAGE_KEY } from "./helpers/constants";
+import EditPokemon from "./EditPokemon";
 
 const App = () => {
 	const [pokemons, setPokemons] = useState([]);
 	const [isLoaded, setIsLoaded] = useState(false); //koristi za inicijalno prikazivanje loadera
+	const [pokemonForEdit, setPokemonForEdit] = useState(false);
 
-	const storagePokemons = JSON.parse(
-		//ovo se dogodi samo prilikom inicijalizacije
-		localStorage.getItem(POKEMONS_STORAGE_KEY) ?? []
-	);
+	const storagePokemons =
+		JSON.parse(localStorage.getItem(POKEMONS_STORAGE_KEY)) ?? []; //ovo se dogodi samo prilikom inicijalizacije
 
 	useEffect(() => {
 		getResource(YELLOW_POKEMONS)
@@ -66,6 +66,11 @@ const App = () => {
 		}
 	};
 
+	const openPokemon = (pokemon) => {
+		setPokemonForEdit(true);
+		return pokemon;
+	};
+
 	return (
 		<div>
 			{!isLoaded && <Loader />}
@@ -74,9 +79,10 @@ const App = () => {
 					pokemons={pokemons}
 					deletePokemon={deletePokemon}
 					addPokemon={addPokemon}
-					editPokemon={editPokemon}
+					openPokemon={openPokemon}
 				/>
 			)}
+			{pokemonForEdit && <EditPokemon pokemonForEdit={pokemons} />}
 		</div>
 	);
 };

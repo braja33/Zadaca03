@@ -24,3 +24,16 @@ export const deleteFromStorage = (key, data) => {
 		throw error;
 	}
 };
+/* 
+export const ReadFromStorage = (key, data) => {
+	try {
+		const storageData = JSON.parse(localStorage.getItem(key)) ?? []; //ako je storage prazan s nuliš operatorom stavi prazan array
+		const newStorageData = storageData.filter(
+			(value) => value.id !== data.id
+		);
+		localStorage.setItem(key, JSON.stringify(newStorageData));
+	} catch (error) {
+		throw error;
+	}
+};
+ */

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import NewPokemon from "./NewPokemon";
 
-const Pokemons = ({ pokemons, deletePokemon, addPokemon, editPokemon }) => {
+const Pokemons = ({ pokemons, deletePokemon, addPokemon, openPokemon }) => {
 	const [isNewPokemonShowed, setIsNewPokemon] = useState(false);
 
 	const handleDeletePokemon = (e, pokemon) => {
@@ -10,10 +10,10 @@ const Pokemons = ({ pokemons, deletePokemon, addPokemon, editPokemon }) => {
 		deletePokemon(pokemon);
 	};
 
-	const handleEditPokemon = (e, pokemon) => {
+	const handleOpenPokemon = (e, pokemon) => {
 		e.preventDefault();
 		console.log(pokemon.name);
-		editPokemon(pokemon);
+		openPokemon(pokemon);
 	};
 
 	return (
@@ -37,9 +37,12 @@ const Pokemons = ({ pokemons, deletePokemon, addPokemon, editPokemon }) => {
 					>
 						{pokemon.name.toUpperCase()}
 						<button
-							className="btn btn-sm btn-success"
+							type="button"
+							className="btn btn-success"
+							data-bs-toggle="modal"
+							data-bs-target="#staticBackdrop"
 							onClick={(e) => {
-								handleEditPokemon(e, pokemon);
+								handleOpenPokemon(e, pokemon);
 							}}
 						>
 							Edit

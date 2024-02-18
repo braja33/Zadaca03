@@ -57,7 +57,7 @@ const App = () => {
 			addToStorage(POKEMONS_STORAGE_KEY, pokemon);
 			setPokemons([pokemon, ...pokemons]);
 		} catch (error) {
-			alert("Greška prilikom pisanja podataka u locak storage");
+			alert("Greška prilikom pisanja podataka u local storage");
 		}
 	};
 
@@ -76,8 +76,14 @@ const App = () => {
 				};
 
 				changeInStorage(POKEMONS_STORAGE_KEY, updatedPokemon);
-				const updatedData = readFromStorage(POKEMONS_STORAGE_KEY);
-				setPokemons(updatedData);
+				const index = pokemons.findIndex((p) => p.id === pokemon.id);
+
+				if (index !== -1) {
+					const updatedPokemons = [...pokemons];
+					updatedPokemons[index] = updatedPokemon;
+					setPokemons(updatedPokemons);
+				}
+				throw new Error("Pokemon nije u polju");
 			} else {
 				throw new Error(
 					"Pokemon je s APIja i ne može ga se promijeniti"

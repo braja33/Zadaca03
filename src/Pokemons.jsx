@@ -44,6 +44,7 @@ const Pokemons = ({ pokemons, deletePokemon, addPokemon, editPokemon }) => {
 			)}
 
 			<hr />
+
 			<ul className="list-group">
 				{pokemons.map((pokemon) => (
 					<li

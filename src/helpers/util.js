@@ -24,3 +24,34 @@ export const deleteFromStorage = (key, data) => {
 		throw error;
 	}
 };
+
+export const readFromStorage = (key) => {
+	try {
+		const storageData = JSON.parse(localStorage.getItem(key)) ?? []; //ako je storage prazan s nuliš operatorom stavi prazan array
+		if (storageData === 0) {
+			throw new Error(
+				"Pokemon se ne nalazi u lokalnoj pohrani. Izmjena nije moguća"
+			);
+		} else {
+			return storageData;
+		}
+	} catch (error) {
+		alert(error);
+	}
+};
+
+export const changeInStorage = (key, updateData) => {
+	try {
+		const storageData = JSON.parse(localStorage.getItem(key)) ?? [];
+		const updatedData = storageData.map((element) => {
+			if (element.id === updateData.id) {
+				return { ...element, name: updateData.name };
+			} else {
+				return element;
+			}
+		});
+		localStorage.setItem(key, JSON.stringify(updatedData));
+	} catch (error) {
+		throw error;
+	}
+};

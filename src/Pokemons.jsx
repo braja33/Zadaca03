@@ -1,19 +1,28 @@
 import React, { useState } from "react";
 import NewPokemon from "./NewPokemon";
+import EditPokemon from "./EditPokemon";
 
 const Pokemons = ({ pokemons, deletePokemon, addPokemon, editPokemon }) => {
 	const [isNewPokemonShowed, setIsNewPokemon] = useState(false);
+	const [isPokemonForEdit, setIsPokemonForEdit] = useState(false);
+	const [pokemonForEdit, setPokemonForEdit] = useState(null);
 
 	const handleDeletePokemon = (e, pokemon) => {
 		e.preventDefault();
-		console.log(pokemon.name);
+
 		deletePokemon(pokemon);
 	};
 
-	const handleEditPokemon = (e, pokemon) => {
+	const handleOpenPokemon = (e, pokemon) => {
 		e.preventDefault();
-		console.log(pokemon.name);
-		editPokemon(pokemon);
+
+		openPokemon(pokemon);
+	};
+
+	const openPokemon = (pokemon) => {
+		setIsPokemonForEdit(true);
+		setPokemonForEdit(pokemon);
+		console.log("pokemon za uređivanje", pokemon);
 	};
 
 	return (
@@ -27,8 +36,15 @@ const Pokemons = ({ pokemons, deletePokemon, addPokemon, editPokemon }) => {
 			</button>
 
 			{isNewPokemonShowed && <NewPokemon addPokemon={addPokemon} />}
+			{isPokemonForEdit && (
+				<EditPokemon
+					pokemonForEdit={pokemonForEdit}
+					editPokemon={editPokemon}
+				/>
+			)}
 
 			<hr />
+
 			<ul className="list-group">
 				{pokemons.map((pokemon) => (
 					<li
@@ -37,9 +53,12 @@ const Pokemons = ({ pokemons, deletePokemon, addPokemon, editPokemon }) => {
 					>
 						{pokemon.name.toUpperCase()}
 						<button
-							className="btn btn-sm btn-success"
+							type="button"
+							className="btn btn-success"
+							data-bs-toggle="modal"
+							data-bs-target="#staticBackdrop"
 							onClick={(e) => {
-								handleEditPokemon(e, pokemon);
+								handleOpenPokemon(e, pokemon);
 							}}
 						>
 							Edit

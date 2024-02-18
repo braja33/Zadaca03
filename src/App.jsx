@@ -3,17 +3,21 @@ import Loader from "./Loader";
 import Pokemons from "./Pokemons";
 import { getResource } from "./helpers/fetch";
 import { YELLOW_POKEMONS } from "./helpers/endpoints";
-import { addToStorage, deleteFromStorage, idGenerator } from "./helpers/util";
+import {
+	readFromStorage,
+	addToStorage,
+	deleteFromStorage,
+	idGenerator,
+	changeInStorage,
+} from "./helpers/util";
 import { POKEMONS_STORAGE_KEY } from "./helpers/constants";
 
 const App = () => {
 	const [pokemons, setPokemons] = useState([]);
 	const [isLoaded, setIsLoaded] = useState(false); //koristi za inicijalno prikazivanje loadera
 
-	const storagePokemons = JSON.parse(
-		//ovo se dogodi samo prilikom inicijalizacije
-		localStorage.getItem(POKEMONS_STORAGE_KEY) ?? []
-	);
+	const storagePokemons =
+		JSON.parse(localStorage.getItem(POKEMONS_STORAGE_KEY)) ?? []; //ovo se dogodi samo prilikom inicijalizacije
 
 	useEffect(() => {
 		getResource(YELLOW_POKEMONS)
@@ -53,16 +57,40 @@ const App = () => {
 			addToStorage(POKEMONS_STORAGE_KEY, pokemon);
 			setPokemons([pokemon, ...pokemons]);
 		} catch (error) {
-			alert("Greška prilikom pisanja podataka u locak storage");
+			alert("Greška prilikom pisanja podataka u local storage");
 		}
 	};
 
-	const editPokemon = (pokemon) => {
+	const editPokemon = (pokemon, newPokemonName) => {
 		try {
-			addToStorage(POKEMONS_STORAGE_KEY, pokemon);
-			setPokemons([pokemon, ...pokemons]);
+			const storageData = readFromStorage(POKEMONS_STORAGE_KEY);
+
+			const pokemonInDataStorage = storageData.find(
+				(element) => element.id === pokemon.id
+			);
+
+			if (pokemonInDataStorage) {
+				const updatedPokemon = {
+					...pokemon,
+					name: newPokemonName,
+				};
+
+				changeInStorage(POKEMONS_STORAGE_KEY, updatedPokemon);
+				const index = pokemons.findIndex((p) => p.id === pokemon.id);
+
+				if (index !== -1) {
+					const updatedPokemons = [...pokemons];
+					updatedPokemons[index] = updatedPokemon;
+					setPokemons(updatedPokemons);
+				}
+				throw new Error("Pokemon nije u polju");
+			} else {
+				throw new Error(
+					"Pokemon je s APIja i ne može ga se promijeniti"
+				);
+			}
 		} catch (error) {
-			alert("Greška prilikom pisanja podataka u locak storage");
+			alert(error);
 		}
 	};
 
